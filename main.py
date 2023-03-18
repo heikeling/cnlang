@@ -15,6 +15,7 @@ from tkinter import *
 class main:
     def __init__(self):
         self.win = tk.Tk()
+        self.win.iconbitmap('cn.ico')
         self.win.title('Cn语言-打造全中文编程')
         self.win.geometry("900x600")
         self.lb1 = tk.Label(self.win,text="欢迎使用Cn语言",font=("微软雅黑", 20),bg="grey")
@@ -47,6 +48,7 @@ class main:
         self.paths = self.et.get()
         self.win.destroy()
         self.root = tk.Tk()
+        self.root.iconbitmap('cn.ico')
         self.root.title(self.paths+"\main.cn")
         with open(self.paths+"\main.cn","w")as f:
             f.write("打印('hello')")
@@ -85,6 +87,7 @@ class main:
         self.bd = tk.Tk()
         self.bd.title("打包exe")
         self.bd.geometry("300x500")
+        self.bd.iconbitmap("cn.ico")
         cde = '''
 import easygui as g
 import tkinter as tk
