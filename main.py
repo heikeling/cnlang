@@ -54,6 +54,7 @@ class main:
         self.root.config(bg="grey")
         self.code = tk.Text(self.root,height=30,width=90,font=("微软雅黑", 10))
         self.code.place(x=230,y=0)
+        self.code.bind('<Key>', self.rcolor)
         self.put = tk.Text(self.root, height=10, width=90, font=("微软雅黑", 10))
         self.put.place(x=230, y=500)
         with open(self.paths+"main.cn","w")as f:
@@ -78,6 +79,7 @@ class main:
         filemenu.add_command(label='运行', command=self.run)
         filemenu.add_command(label='打包exe(需python环境+pyinstaller)', command=self.exe)
         self.root.config(menu=menubar)
+        self.rcolor()
         self.root.mainloop()
     def exe(self):
         self.bd = tk.Tk()
@@ -144,17 +146,30 @@ win.mainloop()'''
                 run.see('end')
                 output = process.stdout.readline()
             process.stdout.close()
+            os.system("xcopy .\dist\code.exe " + xz)
         def td():
             run_t = threading.Thread(target=dab)
             run_t.start()
+        def openlj():
+            s = askdirectory()
+            if s == None:
+                pass
+            else:
+                ps.delete('0',tk.END)
+                ps.insert(tk.INSERT,s)
         btn = tk.Button(self.bd,text="开始打包",command=td)
         btn.pack()
+        btn0 = tk.Button(self.bd, text="路径", command=openlj)
+        btn0.place(x=0,y=0)
         ps = tk.Entry(self.bd)
         ps.pack()
         xz=ps.get()
         run = tk.Text(self.bd)
         run.pack()
-        os.system("xcopy .\dist\code.exe " + xz)
+        self.bd.config(bg='grey')
+        btn.config(bg='grey')
+        btn0.config(bg='grey')
+        run.config(bg='grey')
         self.bd.mainloop()
 
     def onSelect(self,e):
@@ -172,10 +187,13 @@ win.mainloop()'''
             f.write(self.code.get('1.0', 'end'))
     def opens(self):
         filename = filedialog.askopenfilename()
-        f = open(filename, 'r')
-        f2 = f.read()
-        f.close()
-        self.code.insert(INSERT, f2)
+        if filename == None:
+            pass
+        else:
+            f = open(filename, 'r')
+            f2 = f.read()
+            f.close()
+            self.code.insert(INSERT, f2)
     def run(self):
         codes = self.code.get('1.0','end')
         self.codes = codes
@@ -341,6 +359,62 @@ win.mainloop()'''
                 self.put.tag_config(color, foreground=color)
             self.put.insert(tk.END, txt, color)
             self.put.see(tk.END)
+    def rcolor(self,event=None):
+        def search(text_widget, keyword, tag):
+            pos = '1.0'
+            while True:
+                idx = text_widget.search(keyword, pos, END)
+                if not idx:
+                    break
+                pos = '{}+{}c'.format(idx, len(keyword))
+                text_widget.tag_add(tag, idx, pos)
+
+        self.code.tag_config('failed', foreground='red')
+        self.code.tag_config('passed', foreground='blue')
+        self.code.tag_config('t', foreground='green')
+        search(self.code, '导入', 'failed')
+        search(self.code, '遍历循环', 'failed')
+        search(self.code, '条件循环', 'failed')
+        search(self.code, '从', 'passed')
+        search(self.code, '如果', 'passed')
+        search(self.code, '打印', 'failed')
+        search(self.code, '否则如果', 'passed')
+        search(self.code, '否则', 'passed')
+        search(self.code, '整数型', 't')
+        search(self.code, '字符型', 't')
+        search(self.code, '浮点型', 't')
+        search(self.code, '弹出', 'failed')
+        search(self.code, '询问', 'failed')
+        search(self.code, 'True', 't')
+        search(self.code, 'False', 't')
+        search(self.code, '创建界面', 'failed')
+        search(self.code, '类', 'failed')
+        search(self.code, '定义', 'failed')
+        search(self.code, '看作', 't')
+        search(self.code, '尝试', 't')
+        search(self.code, '写入', 't')
+        search(self.code, '返回', 't')
+        search(self.code, '异常', 't')
+        search(self.code, '同', 't')
+        search(self.code, '打开', 't')
+        search(self.code, '退出', 't')
+        search(self.code, '显示按钮', 'passed')
+        search(self.code, '显示文字', 'passed')
+        search(self.code, '标题', 'passed')
+        search(self.code, '大小', 'passed')
+        search(self.code, '输入框', 't')
+        search(self.code, '放置', 't')
+        search(self.code, 'place', 't')
+        search(self.code, '和', 't')
+        search(self.code, '里面', 't')
+        search(self.code, '编译代码', 'failed')
+        search(self.code, '多行文本框', 'failed')
+        search(self.code, '获取值', 'failed')
+        search(self.code, '设置操作', 'failed')
+        search(self.code, '窗口插入文本', 't')
+        search(self.code, '主菜单', 't')
+        search(self.code, '菜单内容', 't')
+        search(self.code, '创建菜单', 't')
 if __name__ == "__main__":
     main=main
     main()
